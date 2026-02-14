@@ -1,0 +1,99 @@
+import { useState } from 'react'
+import { useAddEmployeeMutation } from './employeeSlice'
+import { useGetDepartmentsQuery } from '../departments/departmentSlice'
+import toast from 'react-hot-toast'
+import { HiOutlineUserAdd } from 'react-icons/hi'
+
+export default function AddEmployeeModal({ onClose }) {
+  const [form, setForm] = useState({ fullName: '', email: '', department: '' })
+  const [addEmployee, { isLoading }] = useAddEmployeeMutation()
+  const { data: deptData } = useGetDepartmentsQuery()
+
+  const departments = deptData?.departments || []
+
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await addEmployee(form).unwrap()
+      toast.success('Employee added successfully')
+      onClose()
+    } catch (err) {
+      toast.error(err?.data?.message || 'Failed to add employee')
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="w-full max-w-md rounded-2xl bg-white px-8 py-7 shadow-2xl">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#0f1535]">
+            <HiOutlineUserAdd className="text-2xl text-white" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800">Add Employee</h2>
+          <p className="mt-1 text-sm text-gray-400">Fill in the details to add a new employee</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-500">Employee Name</label>
+            <input
+              name="fullName"
+              value={form.fullName}
+              onChange={handleChange}
+              required
+              placeholder="John Doe"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:border-[#0f1535] focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-500">Email</label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              placeholder="john@company.com"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:border-[#0f1535] focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-500">Department</label>
+            <select
+              name="department"
+              value={form.department}
+              onChange={handleChange}
+              required
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 focus:border-[#0f1535] focus:outline-none"
+            >
+              <option value="">-- Select Department --</option>
+              {departments.map((dept) => (
+                <option key={dept._id} value={dept._id}>{dept.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 rounded-lg bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+            >
+              {isLoading ? 'Adding...' : 'Add Employee'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-lg border-2 border-red-500 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
