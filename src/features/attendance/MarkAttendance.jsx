@@ -10,7 +10,7 @@ export default function MarkAttendance() {
   const [markAttendance, { isLoading: marking }] = useMarkAttendanceMutation()
   const [form, setForm] = useState({
     employeeId: '',
-    date: new Date().toISOString().slice(0, 10),
+    date: new Date().toLocaleDateString('en-CA'),
     status: 'Present',
   })
 
@@ -63,6 +63,8 @@ export default function MarkAttendance() {
             <input
               type="date"
               value={form.date}
+              min={form.date}
+              max={form.date}
               onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
               className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 focus:border-[#0f1535] focus:outline-none"
             />
@@ -97,7 +99,7 @@ export default function MarkAttendance() {
             </button>
             <button
               type="button"
-              onClick={() => setForm({ employeeId: '', date: new Date().toISOString().slice(0, 10), status: 'Present' })}
+              onClick={() => setForm({ employeeId: '', date: new Date().toLocaleDateString('en-CA'), status: 'Present' })}
               className="flex-1 rounded-lg border-2 border-red-500 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50"
             >
               Reset
