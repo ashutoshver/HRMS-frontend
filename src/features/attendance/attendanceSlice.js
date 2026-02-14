@@ -17,15 +17,15 @@ export const attendanceApi = createApi({
       }),
       invalidatesTags: ['Attendance', 'Dashboard'],
     }),
-    getAttendanceByEmployee: builder.query({
-      query: ({ employeeId, date }) => {
-        let url = `/attendance/employee/${employeeId}`
-        if (date) url += `?date=${date}`
-        return url
+    getAttendanceRecords: builder.query({
+      query: ({ employeeId, date } = {}) => {
+        const params = new URLSearchParams()
+        if (date) params.append('date', date)
+        if (employeeId) params.append('employeeId', employeeId)
+        const qs = params.toString()
+        return `/attendance/records${qs ? `?${qs}` : ''}`
       },
-      providesTags: (result, error, { employeeId }) => [
-        { type: 'Attendance', id: employeeId },
-      ],
+      providesTags: ['Attendance'],
     }),
   }),
 })
@@ -33,5 +33,5 @@ export const attendanceApi = createApi({
 export const {
   useGetDashboardQuery,
   useMarkAttendanceMutation,
-  useGetAttendanceByEmployeeQuery,
+  useGetAttendanceRecordsQuery,
 } = attendanceApi

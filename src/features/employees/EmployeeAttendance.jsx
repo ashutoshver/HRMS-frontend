@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useGetEmployeeByIdQuery } from './employeeSlice'
-import { useGetAttendanceByEmployeeQuery } from '../attendance/attendanceSlice'
+import { useGetAttendanceRecordsQuery } from '../attendance/attendanceSlice'
 import Loader from '../../components/Loader'
 import EmptyState from '../../components/EmptyState'
 import { HiArrowLeft } from 'react-icons/hi'
@@ -10,7 +10,7 @@ export default function EmployeeAttendance() {
   const { id } = useParams()
   const [dateFilter, setDateFilter] = useState('')
   const { data: empData, isLoading: empLoading } = useGetEmployeeByIdQuery(id)
-  const { data: attData, isLoading: attLoading } = useGetAttendanceByEmployeeQuery({
+  const { data: attData, isLoading: attLoading } = useGetAttendanceRecordsQuery({
     employeeId: id,
     date: dateFilter || undefined,
   })
@@ -43,15 +43,7 @@ export default function EmployeeAttendance() {
           onChange={(e) => setDateFilter(e.target.value)}
           className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
         />
-        {dateFilter && (
-          <button
-            onClick={() => setDateFilter('')}
-            className="self-start rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
-          >
-            Clear
-          </button>
-        )}
-        <span className="self-start rounded-lg bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700 sm:ml-auto sm:self-auto">
+<span className="self-start rounded-lg bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700 sm:ml-auto sm:self-auto">
           Total Present: {totalPresent}
         </span>
       </div>

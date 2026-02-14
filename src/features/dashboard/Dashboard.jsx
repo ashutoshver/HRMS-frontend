@@ -71,14 +71,14 @@ export default function Dashboard() {
         {statCards.map(({ key, label, icon: Icon, bg }) => (
           <div
             key={key}
-            className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm sm:p-5"
+            className={`flex items-center gap-4 rounded-xl p-4 shadow-sm sm:p-5 ${bg}`}
           >
-            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white ${bg}`}>
-              <Icon className="text-xl" />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20">
+              <Icon className="text-xl text-white" />
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-400 uppercase">{label}</p>
-              <p className="text-2xl font-bold text-gray-800 font-display">{stats[key] ?? 0}</p>
+              <p className="text-xs font-medium text-white/80 uppercase">{label}</p>
+              <p className="text-2xl font-bold text-white font-display">{stats[key] ?? 0}</p>
             </div>
           </div>
         ))}
@@ -121,15 +121,6 @@ export default function Dashboard() {
             ))}
           </select>
         </div>
-        {hasFilters && (
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="flex items-center gap-1 self-start rounded-lg border-2 border-red-500 px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50"
-          >
-            <HiX className="text-sm" /> Clear
-          </button>
-        )}
       </div>
 
       {/* Employee Table / Cards */}

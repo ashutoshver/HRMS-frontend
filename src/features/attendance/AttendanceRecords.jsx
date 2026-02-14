@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGetEmployeesQuery } from '../employees/employeeSlice'
-import { useGetAttendanceByEmployeeQuery } from './attendanceSlice'
+import { useGetAttendanceRecordsQuery } from './attendanceSlice'
 import Loader from '../../components/Loader'
 import EmptyState from '../../components/EmptyState'
 
@@ -11,14 +11,37 @@ export default function AttendanceRecords() {
 
   const employees = empData?.employees || []
 
-  const { data: attData, isLoading: attLoading } = useGetAttendanceByEmployeeQuery(
-    { employeeId: selectedEmp, date: dateFilter || undefined },
-    { skip: !selectedEmp }
+  const hasFilter = selectedEmp || dateFilter
+
+  const { data: attData, isLoading: attLoading } = useGetAttendanceRecordsQuery(
+    {
+      employeeId: selectedEmp || undefined,
+      date: dateFilter || undefined,
+    },
+    { skip: !hasFilter }
   )
 
   const records = attData?.records || []
 
   if (empLoading) return <Loader />
+
+  const statusBadge = (status) => {
+    const styles =
+      status === 'Present'
+        ? 'bg-green-100 text-green-700'
+        : status === 'Absent'
+          ? 'bg-red-100 text-red-700'
+          : 'bg-gray-100 text-gray-500'
+    return (
+      <span className={`inline-block rounded-full px-3 py-0.5 text-xs font-semibold ${styles}`}>
+        {status}
+      </span>
+    )
+  }
+
+  // Determine which columns to show based on active filters
+  const showEmployeeCol = !selectedEmp // date-only or both absent → show employee info
+  const showDateCol = !dateFilter // employee-only or both absent → show date
 
   return (
     <div>
@@ -32,7 +55,7 @@ export default function AttendanceRecords() {
             onChange={(e) => setSelectedEmp(e.target.value)}
             className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
           >
-            <option value="">-- Select Employee --</option>
+            <option value="">-- All Employees --</option>
             {employees.map((emp) => (
               <option key={emp._id} value={emp._id}>
                 {emp.employeeId} — {emp.fullName}
@@ -54,47 +77,39 @@ export default function AttendanceRecords() {
             </span>
           )}
         </div>
-        {dateFilter && (
-          <button
-            onClick={() => setDateFilter('')}
-            className="self-start rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
-          >
-            Clear
-          </button>
-        )}
       </div>
 
-      {!selectedEmp ? (
-        <EmptyState message="Select an employee to view records" />
+      {!hasFilter ? (
+        <EmptyState message="Select an employee or a date to view records" />
       ) : attLoading ? (
         <Loader />
       ) : records.length === 0 ? (
-        <EmptyState message="No attendance records" />
+        <EmptyState message="No attendance records found" />
       ) : (
         <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="border-b bg-gray-50/80 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
               <tr>
-                <th className="px-5 py-3">Date</th>
+                {showEmployeeCol && <th className="px-5 py-3">Employee</th>}
+                {showDateCol && <th className="px-5 py-3">Date</th>}
                 <th className="px-5 py-3">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {records.map((rec) => (
-                <tr key={rec._id} className="transition hover:bg-blue-50/40">
-                  <td className="px-5 py-3.5 text-gray-700">
-                    {new Date(rec.date).toLocaleDateString()}
-                  </td>
+              {records.map((rec, idx) => (
+                <tr key={rec._id || idx} className="transition hover:bg-blue-50/40">
+                  {showEmployeeCol && (
+                    <td className="px-5 py-3.5 text-gray-700">
+                      {rec.employeeId?.fullName || rec.fullName || '—'}
+                    </td>
+                  )}
+                  {showDateCol && (
+                    <td className="px-5 py-3.5 text-gray-700">
+                      {rec.date ? new Date(rec.date).toLocaleDateString() : '—'}
+                    </td>
+                  )}
                   <td className="px-5 py-3.5">
-                    <span
-                      className={`inline-block rounded-full px-3 py-0.5 text-xs font-semibold ${
-                        rec.status === 'Present'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {rec.status}
-                    </span>
+                    {statusBadge(rec.status)}
                   </td>
                 </tr>
               ))}
