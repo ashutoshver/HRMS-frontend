@@ -28,7 +28,7 @@ export default function EmployeeAttendance() {
       </Link>
 
       <div className="mb-5">
-        <h1 className="text-xl font-bold text-gray-800">
+        <h1 className="text-lg font-bold text-gray-800 sm:text-xl">
           {employee?.fullName || 'Employee'} — Attendance
         </h1>
         <p className="text-sm text-gray-500">
@@ -36,22 +36,22 @@ export default function EmployeeAttendance() {
         </p>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center gap-4">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         <input
           type="date"
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none"
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
         />
         {dateFilter && (
           <button
             onClick={() => setDateFilter('')}
-            className="rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
+            className="self-start rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
           >
             Clear
           </button>
         )}
-        <span className="ml-auto rounded-lg bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
+        <span className="self-start rounded-lg bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700 sm:ml-auto sm:self-auto">
           Total Present: {totalPresent}
         </span>
       </div>
@@ -59,7 +59,7 @@ export default function EmployeeAttendance() {
       {records.length === 0 ? (
         <EmptyState message="No attendance records" />
       ) : (
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="border-b bg-gray-50/80 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
               <tr>

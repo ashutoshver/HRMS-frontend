@@ -31,8 +31,8 @@ export default function MarkAttendance() {
   if (isLoading) return <Loader />
 
   return (
-    <div className="flex items-start justify-center pt-6">
-      <div className="w-full max-w-md rounded-2xl bg-white px-8 py-7 shadow-2xl">
+    <div className="flex items-start justify-center pt-2 sm:pt-6">
+      <div className="w-full max-w-md rounded-2xl bg-white px-5 py-6 shadow-2xl sm:px-8 sm:py-7">
         {/* Icon + Title */}
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#0f1535]">

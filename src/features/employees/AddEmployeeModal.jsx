@@ -26,8 +26,8 @@ export default function AddEmployeeModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md rounded-2xl bg-white px-8 py-7 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white px-5 py-6 shadow-2xl sm:px-8 sm:py-7">
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#0f1535]">
             <HiOutlineUserAdd className="text-2xl text-white" />

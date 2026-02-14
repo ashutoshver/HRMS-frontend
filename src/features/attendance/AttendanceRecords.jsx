@@ -24,13 +24,13 @@ export default function AttendanceRecords() {
     <div>
       <h1 className="mb-5 text-xl font-bold text-gray-800">Attendance Records</h1>
 
-      <div className="mb-5 flex flex-wrap items-end gap-4">
-        <div>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
+        <div className="w-full sm:w-auto">
           <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Employee</label>
           <select
             value={selectedEmp}
             onChange={(e) => setSelectedEmp(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
           >
             <option value="">-- Select Employee --</option>
             {employees.map((emp) => (
@@ -40,19 +40,19 @@ export default function AttendanceRecords() {
             ))}
           </select>
         </div>
-        <div>
+        <div className="w-full sm:w-auto">
           <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Filter by Date</label>
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
           />
         </div>
         {dateFilter && (
           <button
             onClick={() => setDateFilter('')}
-            className="rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
+            className="self-start rounded-lg bg-red-500 px-3 py-2 text-xs font-semibold text-white hover:bg-red-600"
           >
             Clear
           </button>
@@ -66,7 +66,7 @@ export default function AttendanceRecords() {
       ) : records.length === 0 ? (
         <EmptyState message="No attendance records" />
       ) : (
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="border-b bg-gray-50/80 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
               <tr>

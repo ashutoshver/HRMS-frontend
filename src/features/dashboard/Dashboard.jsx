@@ -16,10 +16,11 @@ import {
   HiTrash,
   HiEye,
   HiPencil,
-  HiOutlineSearch,
   HiX,
   HiChevronLeft,
   HiChevronRight,
+  HiOutlineMail,
+  HiOutlineOfficeBuilding,
 } from 'react-icons/hi'
 
 const statCards = [
@@ -66,13 +67,13 @@ export default function Dashboard() {
       <h1 className="mb-5 text-xl font-bold text-gray-800 font-display">Dashboard</h1>
 
       {/* Stat Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
         {statCards.map(({ key, label, icon: Icon, bg }) => (
           <div
             key={key}
-            className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm"
+            className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm sm:p-5"
           >
-            <div className={`flex h-11 w-11 items-center justify-center rounded-full text-white ${bg}`}>
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white ${bg}`}>
               <Icon className="text-xl" />
             </div>
             <div>
@@ -84,35 +85,35 @@ export default function Dashboard() {
       </div>
 
       {/* Employee Management Header */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-bold text-gray-800 font-display">Employee Management</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-1.5 rounded-lg bg-[#0f1535] px-4 py-2 text-xs font-semibold text-white hover:bg-[#1a204a]"
+          className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#0f1535] px-4 py-2 text-xs font-semibold text-white hover:bg-[#1a204a] sm:w-auto"
         >
           <HiPlus className="text-sm" /> Add Employee
         </button>
       </div>
 
       {/* Filter Bar */}
-      <div className="mb-4 flex flex-wrap items-end gap-3">
-        <div>
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+        <div className="w-full sm:w-auto">
           <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-gray-400">Search</label>
           <input
             name="search"
             value={filters.search}
             onChange={handleFilterChange}
             placeholder="Name or Emp ID"
-            className="w-48 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm placeholder-gray-300 focus:border-[#0f1535] focus:outline-none"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm placeholder-gray-300 focus:border-[#0f1535] focus:outline-none sm:w-48"
           />
         </div>
-        <div>
+        <div className="w-full sm:w-auto">
           <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-gray-400">Department</label>
           <select
             name="department"
             value={filters.department}
             onChange={handleFilterChange}
-            className="w-44 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none"
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-44"
           >
             <option value="">All Departments</option>
             {departments.map((dept) => (
@@ -124,21 +125,91 @@ export default function Dashboard() {
           <button
             type="button"
             onClick={clearFilters}
-            className="flex items-center gap-1 rounded-lg border-2 border-red-500 px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50"
+            className="flex items-center gap-1 self-start rounded-lg border-2 border-red-500 px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50"
           >
             <HiX className="text-sm" /> Clear
           </button>
         )}
       </div>
 
-      {/* Employee Table */}
+      {/* Employee Table / Cards */}
       {empLoading ? (
         <Loader />
       ) : employees.length === 0 ? (
         <EmptyState message={hasFilters ? 'No employees match your filters' : 'No employees found'} />
       ) : (
         <>
-          <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+          {/* Mobile card view */}
+          <div className="space-y-3 md:hidden">
+            {employees.map((emp, index) => (
+              <div
+                key={emp._id}
+                className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+              >
+                {/* Accent top bar */}
+                <div className="h-1 bg-gradient-to-r from-[#0f1535] via-blue-500 to-yellow-400" />
+
+                <div className="p-4">
+                  {/* Header: Avatar + Name + Badge */}
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0f1535] to-blue-600 text-sm font-bold text-white shadow-md">
+                      {emp.fullName?.charAt(0)?.toUpperCase() || '?'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-gray-800">{emp.fullName}</p>
+                      <p className="text-[11px] font-medium text-gray-400">{emp.employeeId}</p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold text-gray-500">
+                      #{(page - 1) * 10 + (index + 1)}
+                    </span>
+                  </div>
+
+                  {/* Info rows */}
+                  <div className="mb-3 space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <HiOutlineMail className="shrink-0 text-sm text-gray-400" />
+                      <span className="truncate">{emp.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600">
+                      <HiOutlineOfficeBuilding className="shrink-0 text-sm text-gray-400" />
+                      {emp.department?.name ? (
+                        <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-600">
+                          {emp.department.name}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-2 border-t border-gray-100 pt-3">
+                    <button
+                      onClick={() => setEditingEmployee(emp)}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-amber-50 py-2 text-xs font-semibold text-amber-600 transition-colors hover:bg-amber-100"
+                    >
+                      <HiPencil className="text-sm" /> Edit
+                    </button>
+                    <Link
+                      to={`/attendance/employee/${emp._id}`}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-blue-50 py-2 text-xs font-semibold text-blue-600 transition-colors hover:bg-blue-100"
+                    >
+                      <HiEye className="text-sm" /> View
+                    </Link>
+                    <button
+                      onClick={() => setDeletingEmployee(emp)}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-red-50 py-2 text-xs font-semibold text-red-500 transition-colors hover:bg-red-100"
+                    >
+                      <HiTrash className="text-sm" /> Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <div className="hidden md:block overflow-x-auto rounded-xl bg-white shadow-sm">
             <table className="w-full text-left text-sm">
               <thead className="border-b bg-gray-50/80 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                 <tr>
@@ -190,7 +261,7 @@ export default function Dashboard() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="mt-4 flex items-center justify-between px-2">
+          <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-between px-2">
             <p className="text-xs text-gray-500">
               Showing page <b>{page}</b> of <b>{totalPages}</b> ({empData?.totalEmployees || 0} total)
             </p>
@@ -202,7 +273,7 @@ export default function Dashboard() {
               >
                 <HiChevronLeft className="text-lg" />
               </button>
-              
+
               <div className="flex items-center gap-1 mx-1">
                 {[...Array(totalPages)].map((_, i) => (
                   <button
