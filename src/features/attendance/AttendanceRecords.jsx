@@ -40,14 +40,19 @@ export default function AttendanceRecords() {
             ))}
           </select>
         </div>
-        <div className="w-full sm:w-auto">
+        <div className="relative w-full sm:w-auto">
           <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Filter by Date</label>
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto"
+            className={`w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-[#0f1535] focus:outline-none sm:w-auto ${dateFilter ? 'text-gray-800' : 'date-empty'}`}
           />
+          {!dateFilter && (
+            <span className="pointer-events-none absolute bottom-0 left-3 flex h-[42px] items-center text-sm text-gray-400">
+              Select Date
+            </span>
+          )}
         </div>
         {dateFilter && (
           <button
