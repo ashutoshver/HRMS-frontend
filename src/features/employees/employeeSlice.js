@@ -3,7 +3,7 @@ import { attendanceApi } from '../attendance/attendanceSlice'
 
 export const employeeApi = createApi({
   reducerPath: 'employeeApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api/v1' }),
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BASE_URL }),
   tagTypes: ['Employee'],
   endpoints: (builder) => ({
     getEmployees: builder.query({
